@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>ADTOS v4.5 Vercel Vercel Production Guide — Unified Production Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest-deep: #050a07; --forest-rich: #0a120b; --forest-mid: #0f1f15;
+  --emerald: #4AE280; --emerald-bright: #6FFF9E; --emerald-deep: #1B5C2F; --lime: #C3FA70;
+  --gold: #D4AF37; --gold-bright: #F4D67A; --gold-deep: #8B7325;
+  --cream: #FAFAF5; --cream-mute: #C9CBC0; --cream-faint: #8A8C82;
+  --glass-bg: rgba(255,255,255,0.04); --glass-border: rgba(255,255,255,0.1);
+  --glass-blur: blur(24px);
+  --radius: 14px; --radius-lg: 22px; --radius-full: 999px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --glow-emerald: 0 0 24px rgba(74,226,128,0.35);
+  --glow-gold: 0 0 24px rgba(212,175,55,0.35);
+}
+[data-theme="light"] {
+  --forest-deep: #FAFAF5; --forest-rich: #FFFFFF; --forest-mid: #F2F0E8;
+  --emerald: #2DB668; --emerald-bright: #1B9954;
+  --gold: #B89225; --gold-bright: #8B7325; --gold-deep: #F4D67A;
+  --cream: #1B1B1B; --cream-mute: #444444; --cream-faint: #777777;
+  --glass-bg: rgba(0,0,0,0.03); --glass-border: rgba(0,0,0,0.10);
+}
+* { box-sizing: border-box; }
+body {
+  background:
+    radial-gradient(ellipse at top right, rgba(74,226,128,0.06), transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(212,175,55,0.04), transparent 50%),
+    var(--forest-deep);
+  color: var(--cream);
+  font-family: 'Inter', -apple-system, sans-serif;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 60px clamp(28px, 5vw, 64px);
+  line-height: 1.7;
+  font-size: 16px;
+}
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--cream);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+h1 {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  margin: 0 0 16px;
+  letter-spacing: -0.025em;
+}
+h1 .accent {
+  background: linear-gradient(135deg, var(--emerald-bright), var(--lime));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  font-style: italic;
+}
+h1 .gold-accent {
+  color: var(--gold-bright); font-style: italic;
+}
+h2 {
+  font-size: 1.85rem;
+  margin: 3em 0 .6em;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--glass-border);
+  color: var(--cream);
+}
+h3 {
+  color: var(--gold-bright);
+  font-size: 1.3rem;
+  margin: 2em 0 .5em;
+  font-style: normal;
+}
+h4 {
+  color: var(--emerald-bright);
+  font-size: 1.05rem;
+  font-style: italic;
+  margin: 1.6em 0 .4em;
+}
+p { color: var(--cream); }
+strong { color: var(--cream); font-weight: 600; }
+em { color: var(--gold-bright); }
+code {
+  background: rgba(74,226,128,0.08);
+  color: var(--emerald-bright);
+  border: 1px solid rgba(74,226,128,0.18);
+  padding: 2px 8px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .85em;
+}
+pre {
+  background: var(--forest-rich);
+  border: 1px solid var(--glass-border);
+  padding: 22px 26px;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .85rem;
+  line-height: 1.55;
+  color: var(--cream);
+}
+.cover {
+  text-align: center;
+  padding: 80px 30px;
+  background: linear-gradient(135deg, rgba(15,31,21,0.7), rgba(5,10,7,0.95));
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 60px;
+  position: relative;
+  overflow: hidden;
+}
+.cover::after {
+  content: "";
+  position: absolute;
+  width: 500px; height: 500px;
+  top: -150px; right: -100px;
+  background: radial-gradient(circle, rgba(74,226,128,0.20), transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  z-index: -1;
+}
+.cover::before {
+  content: "";
+  position: absolute;
+  width: 380px; height: 380px;
+  bottom: -100px; left: -80px;
+  background: radial-gradient(circle, rgba(212,175,55,0.15), transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  z-index: -1;
+}
+.cover .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  color: var(--emerald-bright);
+  font-size: .75rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.cover .eyebrow::before {
+  content: "●";
+  color: var(--emerald);
+  text-shadow: 0 0 10px var(--emerald);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+.cover .sub {
+  color: var(--cream-mute);
+  font-size: 1.15rem;
+  margin-top: 18px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+.cover .meta {
+  margin-top: 40px;
+  font-size: .85rem;
+  color: var(--cream-faint);
+  letter-spacing: .08em;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 22px 0;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+th {
+  background: var(--forest-mid);
+  color: var(--emerald-bright);
+  padding: 13px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: .76rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--glass-border);
+}
+td {
+  border-bottom: 1px solid var(--glass-border);
+  padding: 13px 16px;
+  vertical-align: top;
+  color: var(--cream);
+}
+td strong { color: var(--cream); }
+tr:hover td { background: rgba(74,226,128,0.04); }
+.callout {
+  background: linear-gradient(135deg, rgba(15,31,21,0.6), rgba(5,10,7,0.85));
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-left: 4px solid var(--gold);
+  padding: 22px 28px;
+  margin: 28px 0;
+  border-radius: var(--radius);
+}
+.callout.win { border-left-color: var(--emerald); }
+.callout.warn { border-left-color: #C25A3C; }
+.callout.vision {
+  border-left-color: var(--gold);
+  background: linear-gradient(135deg, rgba(27,92,47,0.4), rgba(5,10,7,0.95));
+}
+.callout h4 { margin-top: 0; color: var(--gold-bright); font-style: normal; }
+ul, ol { padding-left: 28px; color: var(--cream); }
+li { margin: 6px 0; }
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin: 32px 0;
+}
+.kpi {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  padding: 22px 14px;
+  text-align: center;
+  border-radius: var(--radius);
+  transition: 320ms cubic-bezier(0.22,1,0.36,1);
+}
+.kpi:hover {
+  border-color: var(--emerald);
+  transform: translateY(-3px);
+  box-shadow: var(--glow-emerald);
+}
+.kpi .n {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--cream), var(--emerald-bright));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+.kpi .l {
+  font-size: .68rem;
+  color: var(--cream-faint);
+  text-transform: uppercase;
+  letter-spacing: .2em;
+  margin-top: 8px;
+  font-weight: 600;
+}
+.toc {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  padding: 26px 32px;
+  border-radius: var(--radius);
+  margin: 36px 0;
+}
+.toc h3 { margin-top: 0; color: var(--gold-bright); }
+.toc ol { columns: 2; column-gap: 36px; }
+.toc a {
+  color: var(--cream);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+  transition: 200ms;
+}
+.toc a:hover {
+  color: var(--emerald-bright);
+  border-bottom-color: var(--emerald);
+}
+.diff-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 24px 0;
+}
+.diff-col {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  padding: 22px 26px;
+  border-radius: var(--radius);
+}
+.diff-col.legacy { opacity: 0.7; }
+.diff-col.v4 { border-color: var(--emerald); box-shadow: var(--glow-emerald); }
+.diff-col h4 { margin-top: 0; color: var(--gold-bright); font-style: normal; }
+.section-num {
+  display: inline-block;
+  width: 38px;
+  height: 38px;
+  line-height: 38px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--emerald-deep), var(--forest-mid));
+  border: 1px solid var(--emerald);
+  border-radius: 50%;
+  color: var(--emerald-bright);
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  margin-right: 12px;
+  vertical-align: middle;
+}
+.footer {
+  margin-top: 100px;
+  padding-top: 28px;
+  border-top: 1px solid var(--glass-border);
+  color: var(--cream-faint);
+  font-size: .82rem;
+  text-align: center;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+@media print {
+  body { max-width: none; padding: 30px; font-size: 11pt; background: white; color: #1b1b1b; }
+  .cover { padding: 30px; page-break-after: always; background: white; }
+  h2 { page-break-after: avoid; color: #0f1f15; }
+  table, .callout { page-break-inside: avoid; }
+}
+@page { margin: 1.6cm; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="eyebrow">ADTOS v4.5 Vercel Unified Production Guide</div>
+  <h1>The <span class="accent">Sovereign Forest</span> Guide</h1>
+  <div class="sub">One canonical operating manual that supersedes the legacy v3 Master Manifest + v3 Production Guide + v4 Production Guide. Everything you need to operate ADTOS at world-class quality, anchored to <span class="gold-accent">Vision 2040</span>.</div>
+  <div class="meta">Compiled 2026-06-25 · Companion to <code>ADTOS_v4.3.html</code> · Supersedes v3.x guides</div>
+</div>
+
+</div>
+
+<div class="callout win">
+  <h4>What changed in v4.3</h4>
+  <p><strong>UI corrections:</strong> removed the top search bar, replaced it with a universal search overlay, added a secure Settings workspace, improved modal readability, standardized card hover behavior, fixed header spacing, and corrected live counts for skills, agents, and workflows.</p>
+  <p><strong>Security posture:</strong> credentials are not embedded into the HTML bundle. The Settings section now stores only local browser values until a backend or secure runtime is added.</p>
+</div>
+
+<h2>New in v4.3 — Secure local workspace</h2>
+<h2>New in v4.4 — Secure backend integration
+<h2>Deployment playbooks — Render, Railway, Fly.io, Vercel, Cloudflare</h2>
+<div class="callout vision">
+  <p><strong>Recommended path.</strong> Use Render, Railway, or Fly.io for the long-running Express backend; use Vercel or Cloudflare when you want a serverless footprint. In every case, the real Anthropic secret stays on the deployment platform, never in the HTML app.</p>
+</div>
+
+<table>
+  <thead><tr><th>Platform</th><th>Files included</th><th>Secret location</th><th>App Backend Base URL</th></tr></thead>
+  <tbody>
+    <tr><td>Render</td><td><code>backend/render.yaml</code></td><td>Render environment variables</td><td><code>https://YOUR-RENDER-SERVICE.onrender.com</code></td></tr>
+    <tr><td>Railway</td><td><code>backend/railway.json</code></td><td>Railway Variables</td><td><code>https://YOUR-RAILWAY-APP.up.railway.app</code></td></tr>
+    <tr><td>Fly.io</td><td><code>backend/fly.toml</code> + <code>backend/Dockerfile</code></td><td>Fly secrets</td><td><code>https://YOUR-FLY-APP.fly.dev</code></td></tr>
+    <tr><td>Vercel</td><td><code>vercel/</code></td><td>Vercel Project Environment Variables</td><td><code>https://YOUR-PROJECT.vercel.app</code></td></tr>
+    <tr><td>Cloudflare</td><td><code>cloudflare/</code></td><td><code>wrangler secret put ANTHROPIC_API_KEY</code></td><td><code>https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev</code></td></tr>
+  </tbody>
+</table>
+
+<div class="callout win">
+  <h4>Post-deploy checklist</h4>
+  <ol>
+    <li>Deploy the chosen backend target.</li>
+    <li>Add the real secret as a platform environment variable.</li>
+    <li>Open the app → Settings → Deployment.</li>
+    <li>Paste or preset the Backend Base URL.</li>
+    <li>Click <strong>Test backend</strong>.</li>
+    <li>Run a real Synthesizer intake and verify `/health`, `/api/context/build`, and `/api/brief/generate`.</li>
+  </ol>
+</div>
+</h2>
+<div class="callout vision">
+  <p><strong>Architecture shift.</strong> ADTOS now supports a proper secure-backend pattern. The static HTML app keeps only local workspace preferences, while the live model secret belongs exclusively in the backend environment.</p>
+  <ul>
+    <li><strong>Frontend:</strong> Settings now includes a Backend Base URL and health-test button.</li>
+    <li><strong>Backend:</strong> `GET /health`, `POST /api/context/build`, and `POST /api/brief/generate`.</li>
+    <li><strong>Fallback mode:</strong> if no backend or secret is available, ADTOS falls back to local heuristics.</li>
+    <li><strong>Security rule:</strong> never paste the real Anthropic secret into the app bundle.</li>
+  </ul>
+</div>
+
+<div class="callout win">
+  <h4>Recommended deployment path</h4>
+  <p>Run the backend on a secure platform with environment variables, set an origin allowlist, then point the app Settings → Backend Base URL to that deployment. Use the built-in health test before enabling real work.</p>
+</div>
+
+<div class="callout vision">
+  <p>Open <strong>Settings</strong> from the left sidebar to configure workspace identity, default region, model preferences, API key ID placeholder, endpoint, storage mode, theme, and local-history behavior. This is a <em>UI-only readiness layer</em>; no live key is shipped in the app.</p>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi"><div class="n">72</div><div class="l">Skills</div></div>
+  <div class="kpi"><div class="n">21</div><div class="l">Agents</div></div>
+  <div class="kpi"><div class="n">13</div><div class="l">Workflows</div></div>
+  <div class="kpi"><div class="n">10</div><div class="l">Commands</div></div>
+  <div class="kpi"><div class="n">8</div><div class="l">Stages</div></div>
+  <div class="kpi"><div class="n">5</div><div class="l">Layers</div></div>
+  <div class="kpi"><div class="n">12</div><div class="l">V2040 Priorities</div></div>
+  <div class="kpi"><div class="n">6</div><div class="l">Nat'l Programs</div></div>
+</div>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#whats-new">v4.3 What's New (vs v3, v4.0, v4.1)</a></li>
+    <li><a href="#mental">The four-layer mental model</a></li>
+    <li><a href="#sovereign">The Sovereign Context Substrate</a></li>
+    <li><a href="#vision-2040">Oman Vision 2040 hard-coded integration</a></li>
+    <li><a href="#variable-bank">The Variable Bank</a></li>
+    <li><a href="#a20-gate">The A20 Context Confirmation Gate</a></li>
+    <li><a href="#stages">The 8-stage operating model</a></li>
+    <li><a href="#commands">10 trigger commands</a></li>
+    <li><a href="#patterns">5 workflow patterns</a></li>
+    <li><a href="#first60">First 60 minutes</a></li>
+    <li><a href="#rhythm">Daily · Weekly · Monthly rhythm</a></li>
+    <li><a href="#claude-setup">Deploy in Claude (30-min)</a></li>
+    <li><a href="#team">Scaling to a team (90-day)</a></li>
+    <li><a href="#antipatterns">8 anti-patterns + 10 warning signs</a></li>
+    <li><a href="#quality-bar">99th-percentile quality bar</a></li>
+    <li><a href="#app">The interactive app (v4.3)</a></li>
+  </ol>
+</div>
+
+<h2 id="whats-new"><span class="section-num">1</span>v4.3 What's New</h2>
+
+<p>v4.3 is the production-polish pass on v4.1 Sovereign Forest. All v4.1 capabilities (Sovereign Context Substrate, Vision 2040 hard-gate, 72 skills, 21 agents, full glassmorphism design) are preserved. v4.3 adds:</p>
+
+<div class="diff-block">
+<div class="diff-col legacy">
+<h4>v4.1 Sovereign Forest (prior)</h4>
+<ul>
+<li>Floating Synthesizer FAB top-right</li>
+<li>Single dark theme only</li>
+<li>Navy headings inside modals (low contrast)</li>
+<li>Modal body shows only formatted markdown</li>
+<li>Skill modal shows used_by as text list</li>
+<li>No history of viewed items</li>
+<li>Cards without contextual icons</li>
+<li>Inconsistent card hover effects</li>
+</ul>
+</div>
+<div class="diff-col v4">
+<h4>v4.3 Polish Pass (current)</h4>
+<ul>
+<li><strong>Inline Synthesizer button</strong> in header, no overlap with search</li>
+<li><strong>Dark/Light theme toggle</strong> (◐ next to Synthesizer) with persistence</li>
+<li><strong>Gold/emerald headings</strong> inside modals, full readability</li>
+<li><strong>Formatted vs Raw toggle</strong> for every detail modal</li>
+<li><strong>Agent chip avatars</strong> with clickable jump to agent</li>
+<li><strong>Recent Activity sidebar log</strong> (last 12 viewed)</li>
+<li><strong>Layer/role/pattern icons</strong> on every card type</li>
+<li><strong>Unified hover effect</strong>: lift + tilt + emerald gradient bottom</li>
+<li><strong>Scroll-to-top button</strong> appears after 400px scroll</li>
+<li><strong>Keyboard shortcut T</strong> for theme toggle</li>
+</ul>
+</div>
+</div>
+
+<h2 id="mental"><span class="section-num">2</span>The four-layer mental model</h2>
+
+<p>ADTOS is a <strong>four-layer hybrid orchestration system</strong>, not a checklist:</p>
+
+<table>
+<thead><tr><th>Layer</th><th>Role</th><th>Anthropic Primitive</th><th>When it runs</th></tr></thead>
+<tbody>
+<tr><td><strong>L1 Events</strong></td><td>Triggers (time, webhook, file, command)</td><td>Workflows (YAML)</td><td>Scheduled or event-driven</td></tr>
+<tr><td><strong>L2 Orchestration</strong></td><td>Decides who does what + audits</td><td>Agents (A0..A20)</td><td>Every workflow tick or direct command</td></tr>
+<tr><td><strong>L3 Capability</strong></td><td>72 atomic skills, one job each</td><td>Skills (SKILL.md)</td><td>Called by agents on demand</td></tr>
+<tr><td><strong>L4 Tools & Data</strong></td><td>I/O with external systems</td><td>MCP servers + connectors</td><td>Called by skills when external state needed</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+<h4>Key insight</h4>
+<p>You run <strong>apps (agents)</strong> that call <strong>functions (skills)</strong> on <strong>data (MCP)</strong>. Treat ADTOS like an operating system, not a methodology.</p>
+</div>
+
+<h2 id="sovereign"><span class="section-num">3</span>The Sovereign Context Substrate</h2>
+
+<div class="callout vision">
+<h4>🌐 v4.0+ doctrine</h4>
+<p><strong>Context is not a one-shot input — it is a persistent, queryable, versioned substrate</strong> that every agent reads from and writes back to on every call. Without it, every downstream call re-derives context, producing drift.</p>
+</div>
+
+<p>Seven sovereign-context agents (A13-A20) build the substrate before A0 enters Stage 0:</p>
+
+<table>
+<thead><tr><th>Tag</th><th>Agent</th><th>Output</th></tr></thead>
+<tbody>
+<tr><td>A13</td><td>Context Profiler</td><td>360° client profile (identity, mission, brand, ToV, stakeholders, strategy, regulators)</td></tr>
+<tr><td>A14</td><td>Industry Benchmark</td><td>Industry taxonomy, Porter 5F, best-in-class patterns, regulatory map, competitive landscape</td></tr>
+<tr><td>A15</td><td>Strategic Alignment</td><td>Vision 2040 alignment score 0-100; gate at 70</td></tr>
+<tr><td>A16</td><td>Document Synthesizer</td><td>Citation graph, deduplicated corpus, ToV signature</td></tr>
+<tr><td>A17</td><td>Variable Mapper</td><td>Canonical <code>${VAR.*}</code> bank, versioned, system-prompt-prefixed</td></tr>
+<tr><td>A18</td><td>Session Choreographer</td><td>Before/During/After session blueprint per Rossman + Freytag</td></tr>
+<tr><td>A19</td><td>Visual Reporter</td><td>Alignment radar, Pentastack heatmap, journey map, KPI dashboard</td></tr>
+<tr><td>A20</td><td>Context Confirmation</td><td>5-10 multi-select questions; gates progression to Stage 0</td></tr>
+</tbody>
+</table>
+
+<h2 id="vision-2040"><span class="section-num">4</span>Oman Vision 2040 hard-coded integration</h2>
+
+<div class="callout vision">
+<h4>🇴🇲 Strategic Anchor</h4>
+<p>When the intake form's <code>Region</code> is set to <strong>OM</strong>, ADTOS automatically hard-gates every artifact against <code>plugin/contexts/oman_vision_2040.md</code>. A15 computes an alignment score 0-100 and rejects below 70.</p>
+</div>
+
+<h3>The 12 National Priorities</h3>
+<table>
+<thead><tr><th>#</th><th>Priority</th><th>Pillar</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Education, Learning, Scientific Research and National Capabilities</td><td>People</td></tr>
+<tr><td>2</td><td>Health</td><td>People</td></tr>
+<tr><td>3</td><td>Citizenship, Identity, National Heritage and Culture</td><td>People</td></tr>
+<tr><td>4</td><td>Well-being and Social Protection</td><td>People</td></tr>
+<tr><td>5</td><td>Economic Leadership and Management</td><td>Economy</td></tr>
+<tr><td>6</td><td>Economic Diversification and Fiscal Sustainability</td><td>Economy</td></tr>
+<tr><td>7</td><td>Labour Market and Employment</td><td>Economy</td></tr>
+<tr><td>8</td><td>Private Sector, Investment, and International Cooperation</td><td>Economy</td></tr>
+<tr><td>9</td><td>Development of Governorates and Sustainable Cities</td><td>Place</td></tr>
+<tr><td>10</td><td>Environment and Natural Resources</td><td>Resources</td></tr>
+<tr><td>11</td><td>Legislative, Judicial and Oversight System</td><td>Governance</td></tr>
+<tr><td>12</td><td>Governance of State's Administrative Bodies, Resources and Projects</td><td>Governance</td></tr>
+</tbody>
+</table>
+
+<h3>The 6 National Programs</h3>
+<table>
+<thead><tr><th>Program</th><th>Arabic</th><th>Mandate</th></tr></thead>
+<tbody>
+<tr><td>Estidamah</td><td>استدامة</td><td>Fiscal Sustainability and Financial Sector Development</td></tr>
+<tr><td>Tanwee'a</td><td>تنويع</td><td>Economic Diversification</td></tr>
+<tr><td>Nazdaher</td><td>نزدهر</td><td>Investment and Export Development</td></tr>
+<tr><td>Tashgheel</td><td>تشغيل</td><td>National Employment Program</td></tr>
+<tr><td>Carbon Neutrality</td><td>—</td><td>Net-Zero pathway, energy transition</td></tr>
+<tr><td>Gov Digital Transformation</td><td>—</td><td>Digital government, service automation</td></tr>
+</tbody>
+</table>
+
+<h3>Alignment scoring formula</h3>
+<pre><code>alignment_score = (
+   0.5 * weighted_mean(contribution_score across 12 priorities) +
+   0.3 * weighted_mean(program_alignment across 6 programs) +
+   0.2 * governance_score (5 principles)
+) * 10    // scale to 0..100
+
+PASS threshold: alignment_score >= 70
+APPROVE WITH AMENDMENTS: 70 <= score < 85
+APPROVE: score >= 85
+REJECT (loop back): score < 70</code></pre>
+
+<h2 id="variable-bank"><span class="section-num">5</span>The Variable Bank — single source of truth</h2>
+
+<p>A17 Variable Mapper publishes the <strong>Variable Bank</strong>: a versioned, namespaced key-value store that every downstream agent reads as system-prompt prefix.</p>
+
+<pre><code>${VAR.client.name}           "Acme Renewables"            confidence: 5
+${VAR.client.industry}       "Renewable Energy / Solar PV" confidence: 5
+${VAR.client.region}         "OM"                          confidence: 5
+${VAR.industry.cagr_5yr}     0.12                          confidence: 4
+${VAR.strategic.priorities}  [6, 7, 8, 10]                 confidence: 5
+${VAR.strategic.programs}    ["Tanwee'a","Tashgheel"]      confidence: 5
+${VAR.strategic.score}       82                            confidence: 4
+${VAR.session.decider}       "COO Ms Al-Habsi"             confidence: 5
+${VAR.session.cynefin}       "Complex"                     confidence: 4
+${VAR.session.horizon}       "3-12 months"                 confidence: 5
+${VAR.corpus.documents}      14                            confidence: 5
+${VAR.corpus.tov.formality}  4                             confidence: 4</code></pre>
+
+<p>Every variable has <code>{value, source, confidence_1_5, last_updated_ts, mutable bool}</code>. Bank size ≤ 50KB. Version is bumped on every confirmed change.</p>
+
+<h2 id="a20-gate"><span class="section-num">6</span>The A20 Context Confirmation Gate</h2>
+
+<p>After A17 publishes the bank, A20 generates 5-10 multi-select questions targeting low-confidence fields, source conflicts, and missing-but-critical dimensions. The user answers; the bank is mutated; only then does A0 enter Stage 0.</p>
+
+<p>Standard 8-question set (Region=OM):</p>
+<ol>
+<li>Who is the named human Decider?</li>
+<li>What is the primary time horizon?</li>
+<li>Which North Star Metric will measure success?</li>
+<li>Is the core decision reversible within 30 days at &lt;10% cost?</li>
+<li>Which Vision 2040 priorities does this program touch? (multi-select)</li>
+<li>Which National Program(s) does this anchor to? (multi-select)</li>
+<li>What are the stakes of getting this wrong?</li>
+<li>What experience altitude are you targeting?</li>
+</ol>
+
+<h2 id="stages"><span class="section-num">7</span>The 8-stage operating model</h2>
+<table>
+<thead><tr><th>Stage</th><th>Name</th><th>Lead</th><th>Exit metric</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>Sovereign Context Acquisition</td><td>A13-A20</td><td>Variable Bank published; A20 confirmed</td></tr>
+<tr><td>1</td><td>Cynefin Classification</td><td>A0</td><td>Domain classified with ≥3 diagnostic evidence points</td></tr>
+<tr><td>2</td><td>Define</td><td>A0</td><td>Brief passes single-sentence test; Decider named; metric dated</td></tr>
+<tr><td>3</td><td>Split</td><td>A0</td><td>≥90% of hypotheses falsifiable; MECE-check PASS</td></tr>
+<tr><td>4</td><td>Analyse</td><td>A1, A2</td><td>Top-5 risks have ≥1 strong-evidence test each</td></tr>
+<tr><td>5</td><td>Insight</td><td>A3, A4</td><td>Each insight: confidence ≥4/5, ≥3 evidence citations</td></tr>
+<tr><td>6</td><td>Story</td><td>A5</td><td>5 P's PASS; One Story Job per audience</td></tr>
+<tr><td>7</td><td>Decide → Act</td><td>A6, A7, A8</td><td>SPADE complete; LRI ≥80; A15 alignment ≥80; journal entry logged</td></tr>
+</tbody>
+</table>
+
+<h2 id="commands"><span class="section-num">8</span>The 10 trigger commands</h2>
+<table>
+<thead><tr><th>Command</th><th>What it does</th><th>Backed by</th></tr></thead>
+<tbody>
+<tr><td><code>/ADTOS:full</code></td><td>Full 7-stage pipeline</td><td>A0 + A1..A8</td></tr>
+<tr><td><code>/ADTOS:synthesize</code></td><td>Vague input → polished playbook</td><td>A11</td></tr>
+<tr><td><code>/ADTOS:diagnose</code></td><td>Cynefin diagnostic only</td><td>A0</td></tr>
+<tr><td><code>/ADTOS:experiment</code></td><td>Design experiments</td><td>A2</td></tr>
+<tr><td><code>/ADTOS:story</code></td><td>Engineer narrative</td><td>A5</td></tr>
+<tr><td><code>/ADTOS:decide</code></td><td>SPADE + pre-mortem + bias audit</td><td>A6</td></tr>
+<tr><td><code>/ADTOS:scale</code></td><td>LRI + governance</td><td>A8</td></tr>
+<tr><td><code>/ADTOS:audit</code></td><td>A9 quality gate</td><td>A9</td></tr>
+<tr><td><code>/ADTOS:journal</code></td><td>Log a decision</td><td>A7</td></tr>
+<tr><td><code>/ADTOS:ledger</code></td><td>Update Innovation Accounting</td><td>A8</td></tr>
+</tbody>
+</table>
+
+<h2 id="patterns"><span class="section-num">9</span>The 5 canonical workflow patterns</h2>
+<table>
+<thead><tr><th>Pattern</th><th>Use when</th><th>ADTOS workflow</th></tr></thead>
+<tbody>
+<tr><td><strong>Prompt Chaining</strong></td><td>Each step's output is the next step's input</td><td><code>stage-gate-review.yaml</code></td></tr>
+<tr><td><strong>Routing</strong></td><td>Different inputs need different paths</td><td><code>synthesizer-vague-input.yaml</code></td></tr>
+<tr><td><strong>Parallelization</strong></td><td>Independent subtasks fan out</td><td><code>quarterly-decision-quality-review.yaml</code></td></tr>
+<tr><td><strong>Orchestrator-Workers</strong></td><td>Coordinator decomposes and dispatches</td><td><code>full-pipeline.yaml</code></td></tr>
+<tr><td><strong>Evaluator-Optimizer</strong></td><td>Iterative improvement until threshold</td><td><code>evaluator-loop.yaml</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="first60"><span class="section-num">10</span>First 60 minutes</h2>
+<ol>
+<li><strong>Open ADTOS_v4.3.html</strong> in your browser (5 min).</li>
+<li><strong>Toggle theme</strong> (☾ button top-right) to find your preferred mode (1 min).</li>
+<li><strong>Read the 20 Insights</strong> in the sidebar (15 min) — they explain why most design thinking fails.</li>
+<li><strong>Walk the 7 stages</strong> on the Stages page; click each (15 min).</li>
+<li><strong>Open the Pentastack matrix</strong> (10 min). Each cell is a skill.</li>
+<li><strong>Click the gold ✨ Synthesizer button</strong> (now in header). Run on a real problem (15 min).</li>
+<li><strong>Watch your activity</strong> appear in the "Recent Activity" sidebar section.</li>
+</ol>
+
+<h2 id="rhythm"><span class="section-num">11</span>Daily · Weekly · Monthly rhythm</h2>
+<table>
+<thead><tr><th>Cadence</th><th>What to do</th></tr></thead>
+<tbody>
+<tr><td>Daily</td><td>Log every Type 2 commit in Decision Journal</td></tr>
+<tr><td>Weekly</td><td>Refresh Variable Bank: add new documents, re-run A13-A17</td></tr>
+<tr><td>Weekly</td><td>Run <code>/ADTOS:align</code> to re-audit Vision 2040 alignment</td></tr>
+<tr><td>Bi-weekly</td><td>Re-check Cynefin classification (problems migrate domains)</td></tr>
+<tr><td>Monthly</td><td>Re-prioritize opportunity portfolio (RICE/ICE + Three Horizons)</td></tr>
+<tr><td>Monthly</td><td>Re-run A14 Industry Benchmark for market changes</td></tr>
+<tr><td>Quarterly</td><td>Q×Q Decision Quality Review on full journal cohort</td></tr>
+<tr><td>Quarterly</td><td>Re-audit Pentastack coverage + Variable Bank size</td></tr>
+<tr><td>Annual</td><td>Full strategic refresh; re-run intake-to-context end-to-end</td></tr>
+</tbody>
+</table>
+
+<h2 id="claude-setup"><span class="section-num">12</span>Deploy in Claude — 30-minute setup</h2>
+<ol>
+<li>Download <code>adtos-plugin-v4.0.zip</code> (the plugin core is unchanged in v4.3).</li>
+<li>Create a Claude Project named <code>ADTOS-v4-[client]-[year]</code>.</li>
+<li>Upload all canonical PDFs + <code>plugin/contexts/oman_vision_2040.md</code> + the Master Operating Manifest from the bundle.</li>
+<li>Install the plugin: <code>claude install adtos-plugin-v4.0.zip</code>.</li>
+<li>Verify coherence: <code>python3 plugin/scripts/verify_v4_coherence.py</code>.</li>
+<li>Open <code>ADTOS_v4.3.html</code> as the exploration interface.</li>
+<li>Click the gold <strong>✨ Synthesizer</strong> button (header, top-right).</li>
+<li>Fill in: Client Name, Region <code>OM</code>, Industry, Scope.</li>
+<li>Drag-drop documents, add URLs.</li>
+<li>Click <strong>Build Sovereign Context</strong> — A13-A20 simulate.</li>
+<li>Answer the 8 multi-select questions.</li>
+<li>Watch A0 enter Stage 0 with full Variable Bank context.</li>
+</ol>
+
+<h2 id="team"><span class="section-num">13</span>Scaling to a team — 90-day plan</h2>
+<table>
+<thead><tr><th>Period</th><th>Move</th><th>Outcome</th></tr></thead>
+<tbody>
+<tr><td>Week 1</td><td>Run ADTOS alone on 3 real challenges</td><td>You trust the system</td></tr>
+<tr><td>Week 2</td><td>Share Synthesizer with 1 trusted peer</td><td>Peer trusts the system</td></tr>
+<tr><td>Week 3</td><td>Replace one weekly meeting with Pentastack + Q×Q</td><td>Team sees the rhythm</td></tr>
+<tr><td>Week 4</td><td>Train 3-5 Innovation Catalysts</td><td>Scale beyond founder</td></tr>
+<tr><td>Month 2</td><td>Stand up MCP servers (Decision Registry, Innovation Accounting)</td><td>Artifacts persist across programs</td></tr>
+<tr><td>Month 3</td><td>First quarterly Q×Q Review with leadership</td><td>Org-level decision dataset</td></tr>
+<tr><td>Month 6</td><td>ADTOS is the default operating model</td><td>New PMs onboarded with this Guide</td></tr>
+</tbody>
+</table>
+
+<h2 id="antipatterns"><span class="section-num">14</span>8 anti-patterns + 10 warning signs</h2>
+
+<div class="callout warn">
+<h4>The 8 traps</h4>
+<ol>
+<li><strong>Idea theater.</strong> Pretty slides with no evidence. Tag every claim on Say-Do-Invest.</li>
+<li><strong>Skipping Stage 0.</strong> Applying Complicated methods to Complex problems is the #1 failure mode.</li>
+<li><strong>Confusing quality with outcome.</strong> Score them separately on Q×Q.</li>
+<li><strong>Banned adjectives.</strong> "Best-in-class", "seamless", "world-class" — operationalize or strike.</li>
+<li><strong>Mismatching velocity to door.</strong> Type 1 needs rigor; Type 2 needs speed.</li>
+<li><strong>Vague Deciders.</strong> Every brief names one human. "The team" is not a Decider.</li>
+<li><strong>Vanity metrics.</strong> Track validated-uncertainty reduction in discovery, not signups.</li>
+<li><strong>Mixing story jobs.</strong> One audience, one job per narrative section.</li>
+</ol>
+</div>
+
+<div class="callout warn">
+<h4>10 warning signs you're using ADTOS wrong</h4>
+<ol>
+<li>You never use the Synthesizer.</li>
+<li>Decision Journal is empty after 30 days.</li>
+<li>You always classify problems as Complex (avoiding discipline).</li>
+<li>Pentastack matrix has gaps in the Evidence row.</li>
+<li>All your stories share one audience.</li>
+<li>SPADE memos lack pre-mortems.</li>
+<li>You never invoke A9 or A10.</li>
+<li>You bypass Stage 0 Cynefin.</li>
+<li>You ship without LRI ≥ 80.</li>
+<li>You don't run the quarterly Q×Q review.</li>
+</ol>
+</div>
+
+<h2 id="quality-bar"><span class="section-num">15</span>The 99th-percentile quality bar</h2>
+<div class="callout win">
+<p>An ADTOS playbook is 99th-percentile <strong>if and only if all 12 hold</strong>:</p>
+<ul>
+<li>Variable Bank published with ≥80% coverage and confidence ≥3</li>
+<li>Vision 2040 alignment score ≥80 (when region=OM)</li>
+<li>A20 user confirmation received (no skipped gate)</li>
+<li>Every framework cited with chapter-level source</li>
+<li>Pentastack matrix fully populated (no empty cells)</li>
+<li>5-act session arc time-boxed (Before/During/After)</li>
+<li>SPADE memo with pre-mortem + 5-bias + EV attached</li>
+<li>Launch Readiness Index ≥80</li>
+<li>A9 Audit PASS, A10 Evaluation ≥85</li>
+<li>Decision Journal entry logged with Q×Q-review-due date</li>
+<li>Innovation Accounting ledger climb rate &gt;0</li>
+<li>Visual report package complete: alignment radar + Pentastack heatmap + journey map + KPI dashboard + risk register</li>
+</ul>
+</div>
+
+<h2 id="app"><span class="section-num">16</span>The interactive app (v4.3)</h2>
+
+<p>The companion <code>ADTOS_v4.3.html</code> file is a single, self-contained single-page application. It runs anywhere a modern browser does. Key v4.3 features:</p>
+
+<table>
+<thead><tr><th>Feature</th><th>How to use</th></tr></thead>
+<tbody>
+<tr><td><strong>Theme toggle</strong></td><td>Click ☾/☀ button top-right (or press <code>T</code>)</td></tr>
+<tr><td><strong>Synthesizer</strong></td><td>Gold pill button in header — always one click away</td></tr>
+<tr><td><strong>Back navigation</strong></td><td>← button appears in header whenever you can go back</td></tr>
+<tr><td><strong>Search</strong></td><td>Press <code>/</code> to focus the search box (top-right)</td></tr>
+<tr><td><strong>Recent Activity</strong></td><td>Last 12 viewed items pinned in left sidebar</td></tr>
+<tr><td><strong>Formatted vs Raw</strong></td><td>Toggle pill above every modal body</td></tr>
+<tr><td><strong>Agent jump</strong></td><td>Click any agent chip in a skill modal to jump to that agent</td></tr>
+<tr><td><strong>Layer deep-dive</strong></td><td>Click any layer card on Home → full doctrine + frameworks + skills</td></tr>
+<tr><td><strong>Pentastack matrix</strong></td><td>5 layers × 8 stages = 40 cells, all clickable</td></tr>
+<tr><td><strong>Decision Journal</strong></td><td>Persistent localStorage; survives reload; manual entry supported</td></tr>
+<tr><td><strong>Card icons</strong></td><td>Skills by layer · Agents by role · Workflows by pattern</td></tr>
+<tr><td><strong>Card hover</strong></td><td>Lift + tilt + emerald gradient bottom + glow shadow</td></tr>
+<tr><td><strong>Scroll-to-top</strong></td><td>↑ button appears after 400px scroll</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+<p><em>"A culture of design is a culture that respects context. v4.3 makes context the substrate, polish the experience, and Vision 2040 the anchor."</em></p>
+</div>
+
+<div class="footer">
+ADTOS v4.5 Vercel · Sovereign Forest · Unified Production Guide · 2026-06-25<br>
+Supersedes: v3.x Master Manifest · v3.x Production Guide · v4.0 Production Guide · v4.1 Design System spec<br>
+Synthesizing Brown · Norman · Kelley · Knapp · Osterwalder · Bland · Rossman · Ishak + Oman Vision 2040 canonical doctrine
+</div>
+
+</body>
+</html>

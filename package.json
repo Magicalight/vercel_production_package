@@ -1,0 +1,5 @@
+{
+  "name": "adtos-vercel-production",
+  "private": true,
+  "type": "module"
+}
