@@ -50,3 +50,6 @@ Use a simple intake like:
 - context build returns `ok: true`
 - brief generate returns `ok: true`
 - the app shows backend connected
+
+## Vercel runtime compatibility fix
+This package intentionally omits the `functions.runtime` setting in `vercel.json`. Vercel auto-detects the Node runtime for the API files, which avoids the deployment error you hit.

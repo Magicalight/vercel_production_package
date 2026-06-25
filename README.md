@@ -39,3 +39,6 @@ This package is ready to deploy as a **single Vercel project** that hosts:
 - Verify `/api/brief/generate`
 - Confirm the app can test the backend successfully
 - Keep the Anthropic secret only in Vercel environment variables
+
+## Vercel runtime compatibility fix
+This package intentionally omits the `functions.runtime` setting in `vercel.json`. Vercel auto-detects the Node runtime for the API files, which avoids the deployment error you hit.
