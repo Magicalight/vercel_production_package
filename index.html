@@ -8891,8 +8891,13 @@ document.addEventListener('keydown', e => {
     try {
       const base = getBackendBaseUrl();
       if(!base) throw new Error('missing_backend_url');
-      const res = await fetch(base + '/health');
+
+      let res = await fetch(base + '/health');
+      if(res.status === 404) {
+        res = await fetch(base + '/api/health');
+      }
       if(!res.ok) throw new Error(`health_http_${res.status}`);
+
       const data = await res.json();
       const mode = data.mode || 'unknown';
       if(statusRoot) statusRoot.innerHTML = `<span class="backend-status ok">Connected</span><span class="backend-status ${mode.includes('heuristic') ? 'warn' : 'ok'}">Mode: ${mode}</span><span class="backend-status">${data.service || 'backend'}</span>`;
